@@ -1,0 +1,43 @@
+CREATE TABLE [dbo].[Registration](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[FullName] [nvarchar](500) NULL,
+	[Email] [nvarchar](200) NULL,
+	[Password] [nvarchar](100) NULL,
+	[IsActive] [bit] NULL,
+	[IsDeleted] [bit] NULL,
+	[CreatedBy] [bigint] NULL,
+	[CreatedOn] [datetime] NULL,
+	[UpdatedBy] [bigint] NULL,
+	[UpdatedOn] [datetime] NULL,
+ CONSTRAINT [PK_Registration] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Registration] ADD  CONSTRAINT [DF_Registration_CreatedOn]  DEFAULT (getdate()) FOR [CreatedOn]
+----------------------------------------------------------------------------------------------------------------------------------------------
+CREATE PROCEDURE [dbo].[usp_tbl_Registration_Operation]
+(
+    -- Input parameters --
+    @Id int=0,
+    @FullName nvarchar(500),
+    @Email nvarchar(200),
+	@Password nvarchar(100),
+	@DMLFlag varchar(10),
+    @CreatedBy bigint=0,
+	@UpdatedBy bigint=0
+)
+AS
+begin
+
+ if (@DMLFlag = 'I')
+ begin
+        INSERT INTO dbo.Registration (FullName,Email,Password,IsActive,IsDeleted,CreatedBy)
+		values(@FullName,@Email,@Password,0,1,null)
+
+		Select Scope_Identity()
+ end
+ 
+end
